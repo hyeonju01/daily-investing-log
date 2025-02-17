@@ -1,3 +1,5 @@
+// NestJS 애플리케이션 시작점
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 

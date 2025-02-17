@@ -1,3 +1,4 @@
+// 전체 애플리케이션 공통 서비스
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
