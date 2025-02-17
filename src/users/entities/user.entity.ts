@@ -12,9 +12,9 @@ export class User {
     @Column()
     password: string;
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn()
     created_at: Date;
 
-    @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @UpdateDateColumn()
     updated_at: Date;
 }
