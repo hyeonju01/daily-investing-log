@@ -1,6 +1,5 @@
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import {User} from "../users/entities/user.entity";
 
 export const getDatabaseConfig = (configService: ConfigService): TypeOrmModuleOptions => {
     console.log('📌 현재 환경:', process.env.NODE_ENV); // 현재 적용된 환경 출력
