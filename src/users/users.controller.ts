@@ -3,13 +3,15 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-@Controller('users')
+@Controller('/api/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @Post('/join') // 회원가입
+  async create(@Body() createUserDto: CreateUserDto): Promise<{message: string}> {
+    /* 비밀번호 암호화 로직 추가 */
+    await this.usersService.create(createUserDto);
+    return {message: 'success'};
   }
 
   @Get()
