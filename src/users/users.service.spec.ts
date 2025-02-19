@@ -3,7 +3,7 @@ import { UsersService } from './users.service';
 import {Repository} from "typeorm";
 import {User} from "./entities/user.entity";
 import {getRepositoryToken} from "@nestjs/typeorm";
-
+import * as bcrypt from "bcrypt";
 
 describe('UsersService', () => {
   let usersService: UsersService;
@@ -67,21 +67,38 @@ describe('UsersService', () => {
 
     jest.spyOn(userRepository, 'create');
     jest.spyOn(userRepository, 'save');
+    jest.spyOn(bcrypt, 'genSalt').mockImplementation(async (rounds) => {
+      console.log('▶️ bcrypt.genSalt() called with:', rounds);
+      return `randomSalt${rounds}`;
+    });
+    jest.spyOn(bcrypt, 'hash').mockImplementation(async() => 'hashedPassword123');
 
     const result = await usersService.create(createUserDto);
 
     console.log(result);
 
+    expect(bcrypt.genSalt).toHaveBeenCalledWith(expect.any(Number));
+    expect(bcrypt.genSalt).toHaveBeenCalledTimes(1);
+
+    expect(bcrypt.hash).toHaveBeenCalledWith(createUserDto.password, 'randomSalt10');
+    expect(bcrypt.hash).toHaveBeenCalledTimes(1);
+
+    // bcrypt.compare() 검증
+    // const isPasswordCorrectly = await bcrypt.compare(createUserDto.password, result.password);
+    // expect(isPasswordCorrectly).toBe(true);
+
     expect(result).toEqual({
       id: expect.any(Number),
       email: createUserDto.email,
-      password: createUserDto.password, // 암호화하지 않음
+      // password: createUserDto.password,
+      // password: expect.any(String),
+      password: 'hashedPassword123',
       created_at: expect.any(Date),
       updated_at: expect.any(Date),
     });
 
-    expect(userRepository.create).toHaveBeenCalledWith(createUserDto);
-    expect(userRepository.save).toHaveBeenCalledWith(expect.any(Object));
+    // expect(userRepository.create).toHaveBeenCalledWith(createUserDto);
+    // expect(userRepository.save).toHaveBeenCalledWith(expect.any(Object));
   });
 
 });

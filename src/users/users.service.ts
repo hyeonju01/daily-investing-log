@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import {InjectRepository} from "@nestjs/typeorm";
 import {User} from "./entities/user.entity";
 import {Repository} from "typeorm";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UsersService {
@@ -18,7 +19,10 @@ export class UsersService {
     if (!email || !password) {
       throw new BadRequestException("Email and password is required");
     }
-    const newUser = this.UserRepository.create({email, password});
+
+    const hashedPass = await this.hashPassword(password);
+
+    const newUser = this.UserRepository.create({email, password: hashedPass});
     const createdUser = await this.UserRepository.save(newUser);
 
     return createdUser;
@@ -38,5 +42,11 @@ export class UsersService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  // 비밀번호 암호화
+  async hashPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt(10);
+    return await bcrypt.hash(password, salt);
   }
 }
