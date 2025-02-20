@@ -9,6 +9,7 @@ import { getDatabaseConfig } from './config/database.config'
 import { UsersModule } from './users/users.module'
 import { AuthModule } from './auth/auth.module'
 import { AssetsModule } from './assets/assets.module';
+import { InvestingLogsModule } from './investing-logs/investing-logs.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AssetsModule } from './assets/assets.module';
     UsersModule,
     AuthModule,
     AssetsModule,
+    InvestingLogsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
