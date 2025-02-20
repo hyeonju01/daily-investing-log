@@ -44,7 +44,8 @@ export class AuthService {
     // 사용자 엔티티에 refresh Token 저장
     await this.storeRefreshToken(id, refreshToken)
 
-    return `Issue Refresh Completed. Refresh Token: ${refreshToken}`
+    // return `Issue Refresh Completed. Refresh Token: ${refreshToken}`
+    return refreshToken
   }
 
   /* Access Token 재발급 */

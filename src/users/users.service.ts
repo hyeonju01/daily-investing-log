@@ -48,7 +48,9 @@ export class UsersService {
   }
 
   // 로그인
-  async signIn(loginUserDto: LoginUserDto): Promise<string> {
+  async signIn(
+    loginUserDto: LoginUserDto,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     // 이메일 검증
     const user = await this.UserRepository.findOne({
       where: { email: loginUserDto.email },
@@ -76,7 +78,8 @@ export class UsersService {
     const refreshToken = await this.AuthService.issueRefreshToken(user.id)
 
     // 응답으로 accessToken 전달
-    return `login successful`
+    // return `login successful`
+    return { accessToken: accessToken, refreshToken: refreshToken }
   }
 
   findAll() {

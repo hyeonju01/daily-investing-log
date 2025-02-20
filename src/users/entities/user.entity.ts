@@ -19,7 +19,7 @@ export class User {
   password: string
 
   @Column({ nullable: true })
-  refresh_token: string
+  refresh_token?: string | null
 
   @CreateDateColumn()
   created_at: Date

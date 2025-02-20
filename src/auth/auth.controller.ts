@@ -7,7 +7,7 @@ import { LoginUserDto } from '../users/dto/login-user.dto'
 @Controller('/api/users/auth')
 export class AuthController {
   constructor(
-    private authService: AuthService,
+    // private authService: AuthService,
     private usersService: UsersService,
   ) {}
 
