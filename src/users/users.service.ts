@@ -79,7 +79,7 @@ export class UsersService {
 
     // 응답으로 accessToken 전달
     // return `login successful`
-    return { accessToken: accessToken, refreshToken: refreshToken }
+    return { accessToken, refreshToken }
   }
 
   findAll() {
