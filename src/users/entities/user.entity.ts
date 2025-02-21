@@ -2,9 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import { InvestingLog } from '../../investing-logs/entities/investing-log.entity'
 
 // 회원 ID, 이메일, 비밀번호, 생성일, 수정일, 리프레쉬 토큰
 @Entity()
@@ -18,7 +21,10 @@ export class User {
   @Column()
   password: string
 
-  @Column({ nullable: true })
+  //@OneToMany(() => InvestingLog, (investingLog) => investingLog.user)
+  //investingLogs: InvestingLog[]
+
+  @Column({ type: 'text', nullable: true })
   refresh_token?: string | null
 
   @CreateDateColumn()
