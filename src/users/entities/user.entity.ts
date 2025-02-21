@@ -24,7 +24,7 @@ export class User {
   //@OneToMany(() => InvestingLog, (investingLog) => investingLog.user)
   //investingLogs: InvestingLog[]
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   refresh_token?: string | null
 
   @CreateDateColumn()
