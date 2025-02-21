@@ -15,11 +15,11 @@ import { UpdateUserDto } from './dto/update-user.dto'
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post('/join') // 회원가입
+  // @Post('/join') // 회원가입
   async create(
     @Body() createUserDto: CreateUserDto,
   ): Promise<{ message: string }> {
-    await this.usersService.signUp(createUserDto)
+    // await this.usersService.signUp(createUserDto)
     return { message: 'success' }
   }
 
@@ -28,10 +28,10 @@ export class UsersController {
     return this.usersService.findAll()
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id)
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.usersService.findOne(+id)
+  // }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
