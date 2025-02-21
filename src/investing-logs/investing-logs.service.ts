@@ -61,9 +61,9 @@ export class InvestingLogsService {
       where: { id: logId },
       relations: ['user'],
     })
-
+    // console.log('investing log: ', investingLog)
     if (!investingLog) {
-      throw new NotFoundException(`투자일지(id: ${userId})를 찾을 수 없습니다.`)
+      throw new NotFoundException(`투자일지(id: ${logId})를 찾을 수 없습니다.`)
     }
 
     if (investingLog.user.id !== userId) {
