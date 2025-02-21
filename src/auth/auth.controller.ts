@@ -8,7 +8,7 @@ import { LoginUserDto } from '../users/dto/login-user.dto'
 export class AuthController {
   constructor(
     // private authService: AuthService,
-    private usersService: UsersService,
+    private readonly usersService: UsersService,
   ) {}
 
   @Post('/signUp')
