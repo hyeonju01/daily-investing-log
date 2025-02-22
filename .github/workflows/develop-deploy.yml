@@ -99,10 +99,10 @@ jobs:
             # ls -l .env.staging
             
             echo "Pulling the latest image..."
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/dil-staging-app:develop
+            docker pull ${{ secrets.DOCKER_USERNAME }}/dil-staging-app:develop
             
             echo "Shutting down the current service"
-            sudo -E docker-compose -f docker-compose.yml --env-file /home/ubuntu/.env.staging down
+            docker-compose -f docker-compose.yml --env-file /home/ubuntu/.env.staging down
             
             echo "Starting the service with docker-compose..."
-            sudo -E docker-compose -f docker-compose.yml --env-file /home/ubuntu/.env.staging up -d
+            docker-compose -f docker-compose.yml --env-file /home/ubuntu/.env.staging up -d
