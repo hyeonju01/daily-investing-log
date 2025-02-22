@@ -87,7 +87,8 @@ jobs:
           key: ${{ secrets.STAGING_EC2_SSH_KEY }}
           script: |
             echo "Setting permissions for .env.staging file..."
-            sudo chmod +r /home/ubuntu/.env.staging
+            sudo chown ubuntu:ubuntu /home/ubuntu/.env.staging
+            sudo chmod 644 /home/ubuntu/.env.staging
             
             echo "Pulling the latest image..."
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/dil-staging-app:develop
