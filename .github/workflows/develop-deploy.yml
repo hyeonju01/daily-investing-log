@@ -86,11 +86,14 @@ jobs:
           username: ${{ secrets.STAGING_EC2_USERNAME }}
           key: ${{ secrets.STAGING_EC2_SSH_KEY }}
           script: |
+            echo "Setting permissions for .env.staging file..."
+            sudo chmod +r /home/ubuntu/.env.staging
+            
             echo "Pulling the latest image..."
-            docker pull ${{ secrets.DOCKER_USERNAME }}/my-nest-app:develop
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/dil-staging-app:develop
             
             echo "Shutting down the current service"
-            docker-compose -f docker-compose.yml --env-file .env.staging down  
+            sudo docker-compose -f docker-compose.yml --env-file .env.staging down
             
             echo "Starting the service with docker-compose..."
-            docker-compose -f docker-compose.yml --env-file .env.staging up -d
+            sudo docker-compose -f docker-compose.yml --env-file .env.staging up -d
