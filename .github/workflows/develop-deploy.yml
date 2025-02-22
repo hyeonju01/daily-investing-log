@@ -86,23 +86,23 @@ jobs:
           username: ${{ secrets.STAGING_EC2_USERNAME }}
           key: ${{ secrets.STAGING_EC2_SSH_KEY }}
           script: |
-            echo "Setting permissions for .env.staging file..."
-            sudo chown ubuntu:ubuntu /home/ubuntu/.env.staging
-            sudo chmod 644 /home/ubuntu/.env.staging
+            # echo "Setting permissions for .env.staging file..."
+            # sudo chown ubuntu:ubuntu /home/ubuntu/.env.staging
+            # sudo chmod 644 /home/ubuntu/.env.staging
 
-            echo "=== Deploy Script Debug Info ==="
-            echo "Current user: $(whoami)"
-            echo "Home directory listing:"
-            ls -ld ~
+            # echo "=== Deploy Script Debug Info ==="
+            # echo "Current user: $(whoami)"
+            # echo "Home directory listing:"
+            # ls -ld ~
             
-            echo "Listing .env.staging file details:"
-            ls -l .env.staging
+            # echo "Listing .env.staging file details:"
+            # ls -l .env.staging
             
             echo "Pulling the latest image..."
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/dil-staging-app:develop
             
             echo "Shutting down the current service"
-            sudo docker-compose -f docker-compose.yml --env-file /home/ubuntu/.env.staging down
+            sudo -E docker-compose -f docker-compose.yml --env-file /home/ubuntu/.env.staging down
             
             echo "Starting the service with docker-compose..."
-            sudo docker-compose -f docker-compose.yml --env-file /home/ubuntu/.env.staging up -d
+            sudo -E docker-compose -f docker-compose.yml --env-file /home/ubuntu/.env.staging up -d
