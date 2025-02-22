@@ -102,7 +102,7 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/dil-staging-app:develop
             
             echo "Shutting down the current service"
-            docker-compose -f docker-compose.yml --env-file /home/ubuntu/.env.staging down
+            docker compose -f docker-compose.yml --env-file /home/ubuntu/.env.staging down
             
             echo "Starting the service with docker-compose..."
-            docker-compose -f docker-compose.yml --env-file /home/ubuntu/.env.staging up -d
+            docker compose -f docker-compose.yml --env-file /home/ubuntu/.env.staging up -d
