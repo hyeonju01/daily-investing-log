@@ -49,15 +49,29 @@ jobs:
           username: ${{ secrets.STAGING_EC2_USERNAME }}
           key: ${{ secrets.STAGING_EC2_SSH_KEY }}
           script: |
+            echo "Writing SSH key to /tmp/db_ec2_ssh_key.pem..."
+            echo "${{ secrets.DB_EC2_SSH_KEY }}" > /tmp/db_ec2_ssh_key.pem
+            chmod 777 /tmp/db_ec2_ssh_key.pem
             echo "Setting up SSH port forwarding on EC2..."
-            nohup ssh -L 15432:${{ secrets.RDS_HOST }}:3306 -i ${{ secrets.DB_EC2_SSH_KEY }} ubuntu@${{ secrets.DB_EC2_HOST }} -N > port-forward.log 2>&1 &
+            nohup ssh -L 15432:${{ secrets.RDS_HOST }}:3306 -i /tmp/db_ec2_ssh_key.pem ubuntu@${{ secrets.DB_EC2_HOST }} -N > port-forward.log 2>&1 &
             sleep 5
-            if netstat -tuln | grep 15432; then
+            if ss -tuln | grep 15432; then
               echo "SSH tunnel established successfully on port 15432."
             else
-              echo "Failed to establish SSH tunnel." >&2
+              echo "Failed to establish SSH tunnel. Error log:" >&2
+              cat port-forward.log >&2
               exit 1
             fi
+
+#            echo "Setting up SSH port forwarding on EC2..."
+#            nohup ssh -L 15432:${{ secrets.RDS_HOST }}:3306 -i ${{ secrets.DB_EC2_SSH_KEY }} ubuntu@${{ secrets.DB_EC2_HOST }} -N > port-forward.log 2>&1 &
+#            sleep 5
+#            if netstat -tuln | grep 15432; then
+#              echo "SSH tunnel established successfully on port 15432."
+#            else
+#              echo "Failed to establish SSH tunnel." >&2
+#              exit 1
+#            fi
 
       - name: Deploy to Staging Server via SSH
         uses: appleboy/ssh-action@v0.1.7
