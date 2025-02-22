@@ -99,7 +99,7 @@ jobs:
             # ls -l .env.staging
             
             echo "Pulling the latest image..."
-            docker pull ${{ secrets.DOCKER_USERNAME }}/dil-staging-app:develop
+            docker pull ${{ secrets.DOCKER_USERNAME }}/dil-staging-app:latest
             
             echo "Shutting down the current service"
             docker compose -f docker-compose.yml --env-file /home/ubuntu/.env.staging down
