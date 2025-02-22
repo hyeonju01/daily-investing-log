@@ -51,14 +51,14 @@ jobs:
           script: |
             echo "Writing SSH key to /tmp/db_ec2_ssh_key.pem..."
             echo "${{ secrets.DB_EC2_SSH_KEY }}" > /tmp/db_ec2_ssh_key.pem
-            chmod 00 /tmp/db_ec2_ssh_key.pem
+            chmod 600 /tmp/db_ec2_ssh_key.pem
             
             echo "Adding remote host to known_hosts..."
             mkdir -p ~/.ssh
             ssh-keyscan -H ${{ secrets.DB_EC2_HOST }} >> ~/.ssh/known_hosts
 
             echo "Setting up SSH port forwarding on EC2..."
-            nohup ssh -o StrictHostKeyChecking=no -L 15432:${{ secrets.RDS_HOST }}:3306 -i /tmp/db_ec2_ssh_key.pem ubuntu@${{ secrets.DB_EC2_HOST }} -N > port-forward.log 2>&1 &
+            nohup ssh -L 15432:${{ secrets.RDS_HOST }}:3306 -i /tmp/db_ec2_ssh_key.pem ubuntu@${{ secrets.DB_EC2_HOST }} -N > port-forward.log 2>&1 &
             sleep 5
             
             if ss -tuln | grep 15432; then
