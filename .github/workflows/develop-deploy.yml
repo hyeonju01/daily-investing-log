@@ -89,6 +89,14 @@ jobs:
             echo "Setting permissions for .env.staging file..."
             sudo chown ubuntu:ubuntu /home/ubuntu/.env.staging
             sudo chmod 644 /home/ubuntu/.env.staging
+
+            echo "=== Deploy Script Debug Info ==="
+            echo "Current user: $(whoami)"
+            echo "Home directory listing:"
+            ls -ld ~
+            
+            echo "Listing .env.staging file details:"
+            ls -l .env.staging
             
             echo "Pulling the latest image..."
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/dil-staging-app:develop
