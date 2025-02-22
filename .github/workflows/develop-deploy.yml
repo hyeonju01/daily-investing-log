@@ -53,7 +53,7 @@ jobs:
             echo "${{ secrets.DB_EC2_SSH_KEY }}" > /tmp/db_ec2_ssh_key.pem
             chmod 777 /tmp/db_ec2_ssh_key.pem
             echo "Setting up SSH port forwarding on EC2..."
-            nohup ssh -L 15432:${{ secrets.RDS_HOST }}:3306 -i /tmp/db_ec2_ssh_key.pem ubuntu@${{ secrets.DB_EC2_HOST }} -N > port-forward.log 2>&1 &
+            nohup ssh -o StrictHostKeyChecking=no -L 15432:${{ secrets.RDS_HOST }}:3306 -i /tmp/db_ec2_ssh_key.pem ubuntu@${{ secrets.DB_EC2_HOST }} -N > port-forward.log 2>&1 &
             sleep 5
             if ss -tuln | grep 15432; then
               echo "SSH tunnel established successfully on port 15432."
