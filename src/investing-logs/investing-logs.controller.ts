@@ -15,7 +15,15 @@ import { InvestingLogsService } from './investing-logs.service'
 import { CreateInvestingLogDto } from './dto/create-investing-log.dto'
 import { UpdateInvestingLogDto } from './dto/update-investing-log.dto'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 
+@ApiTags('투자일지')
+@ApiBearerAuth()
 @Controller('api/investing-logs')
 @UseGuards(JwtAuthGuard)
 export class InvestingLogsController {
@@ -26,6 +34,8 @@ export class InvestingLogsController {
    */
   @Post('/new')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: '투자일지 생성' })
+  @ApiResponse({ status: 201 })
   async createInvestingLog(
     @Req() req: any,
     @Body() createInvestingLogDto: CreateInvestingLogDto,
@@ -45,6 +55,8 @@ export class InvestingLogsController {
    */
   @Get('/list')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: '사용자의 모든 투자일지를 조회합니다.' })
+  @ApiResponse({ status: 201 })
   async getAllInvestingLogs(@Req() req: any) {
     return this.investingLogsService.findAllByUserId(req.user.id)
   }
@@ -54,6 +66,8 @@ export class InvestingLogsController {
    */
   @Get(':logId')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: '투자일지를 조회합니다.' })
+  @ApiResponse({ status: 201 })
   async getInvestingLogById(
     @Req() req: any,
     @Param('logId', ParseIntPipe) logId: number,
@@ -68,6 +82,8 @@ export class InvestingLogsController {
    */
   @Delete(':logId')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: '사용자의 투자일지를 삭제합니다.' })
+  @ApiResponse({ status: 201 })
   async deleteInvestingLog(@Req() req: any, @Param('logId') logId: number) {
     return this.investingLogsService.deleteInvestingLog(logId, req.user.id)
   }
