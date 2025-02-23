@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
@@ -14,6 +15,8 @@ import { AuthService } from '../auth/auth.service'
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name)
+
   constructor(
     @InjectRepository(User)
     private UserRepository: Repository<User>,
@@ -22,6 +25,7 @@ export class UsersService {
 
   // 회원가입
   async signUp(createUserDto: CreateUserDto): Promise<User> {
+    this.logger.log(`회원가입 요청: ${JSON.stringify(createUserDto)}`)
     const { email, password } = createUserDto
     if (!email || !password) {
       throw new BadRequestException('Email and password is required')
@@ -47,7 +51,7 @@ export class UsersService {
       createdUser.email,
     )
     const refreshToken = this.AuthService.issueRefreshToken(createdUser.id)
-
+    this.logger.log(`회원가입 성공 - userId: ${createdUser.id}`)
     return createdUser
   }
 
@@ -55,6 +59,7 @@ export class UsersService {
   async signIn(
     loginUserDto: LoginUserDto,
   ): Promise<{ accessToken: string; refreshToken: string }> {
+    this.logger.log(`로그인 요청: ${JSON.stringify(loginUserDto)}`)
     // 이메일 검증
     const user = await this.UserRepository.findOne({
       where: { email: loginUserDto.email },
@@ -83,6 +88,7 @@ export class UsersService {
 
     // 응답으로 accessToken 전달
     // return `login successful`
+    this.logger.log(`로그인 성공 - userId: ${user.id}`)
     return { accessToken, refreshToken }
   }
 
@@ -92,24 +98,28 @@ export class UsersService {
 
   // 사용자 조회
   async findById(userId: number): Promise<User> {
+    this.logger.log(`사용자 조회 요청: ${JSON.stringify(userId)}`)
     const user = await this.UserRepository.findOne({ where: { id: userId } })
     if (!user) {
       throw new NotFoundException('User not found')
     }
+    this.logger.log(`사용자 조회 성공 - userId: ${user.id}`)
     return user
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`
-  }
+  // update(id: number, updateUserDto: UpdateUserDto) {
+  //   return `This action updates a #${id} user`
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} user`
+  // }
 
   // 비밀번호 암호화
   async hashPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt(10)
+    this.logger.log(`비밀번호 암호화 완료`)
+
     return await bcrypt.hash(password, salt)
   }
 }
