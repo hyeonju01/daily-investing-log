@@ -2,7 +2,7 @@
     <p align="center">
 
 ## Output: API 문서 URL
-_작성예정_
+- 투자일지 API [바로가기](http://ec2-34-203-191-73.compute-1.amazonaws.com:3000/api-docs)
 
 ## 요구사항
 ### 인가, 인증
