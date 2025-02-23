@@ -107,13 +107,13 @@ export class UsersService {
     return user
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`
-  }
+  // update(id: number, updateUserDto: UpdateUserDto) {
+  //   return `This action updates a #${id} user`
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} user`
+  // }
 
   // 비밀번호 암호화
   async hashPassword(password: string): Promise<string> {
