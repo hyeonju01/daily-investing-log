@@ -30,8 +30,8 @@ export class InvestingLogsController {
     @Req() req: any,
     @Body() createInvestingLogDto: CreateInvestingLogDto,
   ) {
-    console.log('req:', req)
-    console.log('req.user:', req.user)
+    // console.log('req:', req)
+    // console.log('req.user:', req.user)
 
     const userId = req.user?.id
     if (!userId) {
@@ -43,7 +43,8 @@ export class InvestingLogsController {
   /**
    * 사용자의 모든 투자일지 조회
    */
-  @Get()
+  @Get('/list')
+  @UseGuards(JwtAuthGuard)
   async getAllInvestingLogs(@Req() req: any) {
     return this.investingLogsService.findAllByUserId(req.user.id)
   }
@@ -52,6 +53,7 @@ export class InvestingLogsController {
    * 생성한 투자일지 조회
    */
   @Get(':logId')
+  @UseGuards(JwtAuthGuard)
   async getInvestingLogById(
     @Req() req: any,
     @Param('logId', ParseIntPipe) logId: number,
@@ -65,6 +67,7 @@ export class InvestingLogsController {
    * 투자일지 삭제
    */
   @Delete(':logId')
+  @UseGuards(JwtAuthGuard)
   async deleteInvestingLog(@Req() req: any, @Param('logId') logId: number) {
     return this.investingLogsService.deleteInvestingLog(logId, req.user.id)
   }
