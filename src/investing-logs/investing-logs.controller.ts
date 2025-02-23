@@ -24,13 +24,14 @@ export class InvestingLogsController {
   /**
    * 투자일지 생성
    */
-  @Post()
+  @Post('/new')
+  @UseGuards(JwtAuthGuard)
   async createInvestingLog(
     @Req() req: any,
     @Body() createInvestingLogDto: CreateInvestingLogDto,
   ) {
-    // console.log('req:', req)
-    // console.log('req.user:', req.user)
+    console.log('req:', req)
+    console.log('req.user:', req.user)
 
     const userId = req.user?.id
     if (!userId) {
