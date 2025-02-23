@@ -27,6 +27,6 @@ describe('JwtStrategy', () => {
     const payload = { sub: 1, email: 'test@example.com' }
     const result = await jwtStrategy.validate(payload)
 
-    expect(result).toEqual({ sub: 1, email: 'test@example.com' })
+    expect(result).toEqual({ id: 1, email: 'test@example.com' })
   })
 })
