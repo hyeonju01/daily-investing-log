@@ -1,7 +1,7 @@
 // NestJS Main (전체 애플리케이션 관리)
-import { config } from 'dotenv'
-
-config({ path: '.env.staging' })
+// import { config } from 'dotenv'
+//
+// config({ path: '.env.staging' })
 
 import { Module } from '@nestjs/common'
 import { AppController } from './app.controller'
@@ -20,7 +20,7 @@ import { InvestingLogsModule } from './investing-logs/investing-logs.module'
       isGlobal: true,
       cache: false,
       envFilePath: '.env.staging',
-      // envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+      // envFilePath: process.env.NODE_ENV === 'test' ? '.env.staging' : '.env',
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule, UsersModule],
