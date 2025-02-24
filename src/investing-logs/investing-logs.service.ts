@@ -1,9 +1,7 @@
 import {
-  Delete,
   ForbiddenException,
   Injectable,
   NotFoundException,
-  Post,
 } from '@nestjs/common'
 import { CreateInvestingLogDto } from './dto/create-investing-log.dto'
 import { InvestingLog } from './entities/investing-log.entity'
@@ -22,6 +20,7 @@ export class InvestingLogsService {
 
     @InjectRepository(PurchaseHistory)
     private readonly purchaseHistoryRepository: Repository<PurchaseHistory>,
+
     private readonly userService: UsersService,
   ) {}
 

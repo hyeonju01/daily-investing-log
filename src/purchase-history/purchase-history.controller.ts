@@ -20,7 +20,7 @@ import { InvestingLogsService } from '../investing-logs/investing-logs.service'
 import { AssetsService } from '../assets/assets.service'
 
 @ApiTags('자산 추가')
-//@ApiBearerAuth()
+@ApiBearerAuth()
 @Controller('/investing-logs/{:logId}/purchase-history')
 @UseGuards(JwtAuthGuard)
 export class PurchaseHistoryController {

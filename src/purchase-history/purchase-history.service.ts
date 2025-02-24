@@ -26,9 +26,6 @@ export class PurchaseHistoryService {
   async create(
     userID: number,
     logId: number,
-    // assetId: number,
-    // purchasePrice: number,
-    // quantity: number,
     createPurchaseHistoryDto: CreatePurchaseHistoryDto,
   ): Promise<PurchaseHistory> {
     const user = await this.userRepo.findOne({ where: { id: userID } })
@@ -59,7 +56,7 @@ export class PurchaseHistoryService {
       asset,
       purchasePrice: createPurchaseHistoryDto.purchasePrice,
       purchaseVolume: createPurchaseHistoryDto.quantity,
-      isDeleted: false, // Soft Delete를 위한 필드 추가
+      isDeleted: false, // Soft Delete 필드 추가
     })
 
     return this.purchaseHistoryRepo.save(newPurchaseHistory)
