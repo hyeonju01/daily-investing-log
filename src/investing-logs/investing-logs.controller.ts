@@ -85,7 +85,7 @@ export class InvestingLogsController {
   @ApiOperation({ summary: '사용자의 투자일지를 삭제합니다.' })
   @ApiResponse({ status: 201 })
   async deleteInvestingLog(@Req() req: any, @Param('logId') logId: number) {
-    return this.investingLogsService.deleteInvestingLog(logId, req.user.id)
+    return this.investingLogsService.softDelete(logId, req.user.id)
   }
 
   // @Patch(':id')

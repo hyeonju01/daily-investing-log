@@ -44,4 +44,7 @@ export class InvestingLog {
 
   @UpdateDateColumn() // 수정일
   updatedAt: Date
+
+  @Column({ default: false })
+  isDeleted: boolean
 }

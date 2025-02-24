@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { forwardRef, Module } from '@nestjs/common'
 import { PurchaseHistoryService } from './purchase-history.service'
 import { PurchaseHistoryController } from './purchase-history.controller'
 import { TypeOrmModule } from '@nestjs/typeorm'
@@ -11,10 +11,12 @@ import { UsersService } from '../users/users.service'
 import { AuthService } from '../auth/auth.service'
 import { JwtService } from '@nestjs/jwt'
 import { AssetsService } from '../assets/assets.service'
+import { InvestingLogsModule } from '../investing-logs/investing-logs.module'
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([PurchaseHistory, InvestingLog, Asset, User]), // ✅ User 추가
+    forwardRef(() => InvestingLogsModule),
   ],
   controllers: [PurchaseHistoryController],
   providers: [
@@ -25,6 +27,6 @@ import { AssetsService } from '../assets/assets.service'
     JwtService,
     AssetsService,
   ],
-  exports: [PurchaseHistoryService],
+  exports: [PurchaseHistoryService, TypeOrmModule],
 })
 export class PurchaseHistoryModule {}

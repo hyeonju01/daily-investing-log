@@ -5,11 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { InvestingLog } from './entities/investing-log.entity'
 import { UsersModule } from '../users/users.module'
 import { UsersService } from '../users/users.service'
+import { PurchaseHistory } from '../purchase-history/entities/purchase-history.entity'
+import { PurchaseHistoryModule } from '../purchase-history/purchase-history.module'
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([InvestingLog]),
+    TypeOrmModule.forFeature([InvestingLog, PurchaseHistory]),
     forwardRef(() => UsersModule),
+    forwardRef(() => PurchaseHistoryModule),
   ],
   controllers: [InvestingLogsController],
   providers: [InvestingLogsService],
