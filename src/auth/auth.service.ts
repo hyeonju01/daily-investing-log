@@ -83,4 +83,58 @@ export class AuthService {
     const isValid = await bcrypt.compare(refreshToken, user.refresh_token)
     return isValid
   }
+
+  /* 이메일 인증 토큰 발급 */
+  async sendEmailVerification(email: string): Promise<string> {
+    const user = await this.UserRepository.findOne({ where: { email } })
+    if (!user) {
+      throw new NotFoundException('User not found')
+    }
+
+    if (user.isEmailVerified) {
+      throw new BadRequestException('Email is already verified')
+    }
+
+    const token = this.jwtService.sign(
+      { sub: user.id, email: user.email },
+      {
+        secret: this.configService.get<string>('JWT_SECRET'),
+        expiresIn: '1h',
+      },
+    )
+
+    // TODO: 이메일 발송 로직 추가 (메일 서비스 사용)
+    console.log(
+      `🔗 Email verification link: http://localhost:3000/api/auth/verify-email/${token}`,
+    )
+
+    return token
+  }
+
+  /* 이메일 인증 확인 */
+  async verifyEmail(token: string): Promise<string> {
+    try {
+      const payload = this.jwtService.verify(token, {
+        secret: this.configService.get<string>('JWT_SECRET'),
+      })
+
+      const user = await this.UserRepository.findOne({
+        where: { id: payload.sub },
+      })
+      if (!user) {
+        throw new NotFoundException('User not found')
+      }
+
+      if (user.isEmailVerified) {
+        throw new BadRequestException('Email is already verified')
+      }
+
+      user.isEmailVerified = true
+      await this.UserRepository.save(user)
+
+      return 'Email verified successfully'
+    } catch (error) {
+      throw new BadRequestException('Invalid or expired token')
+    }
+  }
 }
