@@ -14,15 +14,20 @@ import {
 } from '@nestjs/common'
 import { PurchaseHistoryService } from './purchase-history.service'
 import { CreatePurchaseHistoryDto } from './dto/create-purchase-history.dto'
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { InvestingLogsService } from '../investing-logs/investing-logs.service'
 import { AssetsService } from '../assets/assets.service'
 
 @ApiTags('자산 추가')
+@UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 @Controller('/investing-logs/{:logId}/purchase-history')
-@UseGuards(JwtAuthGuard)
 export class PurchaseHistoryController {
   private readonly logger = new Logger(PurchaseHistoryController.name)
   constructor(
@@ -31,7 +36,10 @@ export class PurchaseHistoryController {
     private readonly assetService: AssetsService,
   ) {}
 
-  @Post()
+  @Post('/new')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: '투자일지에 매수 자산을 기록합니다.' })
+  @ApiResponse({ status: 201 })
   async create(
     @Req() req: any,
     @Param('logId') logId: number,
@@ -77,6 +85,9 @@ export class PurchaseHistoryController {
 
   /** ✅ 투자일지의 매수이력 목록 조회 */
   @Get('list')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: '투자일지의 매수이력을 모두 조회합니다.' })
+  @ApiResponse({ status: 201 })
   async findAll(@Req() req: any, @Param('logId') logId: number) {
     this.logger.log(`📌 [GET] /purchase-history/list - 요청 수신`)
     if (!req || !req.user) {
@@ -132,6 +143,9 @@ export class PurchaseHistoryController {
 
   /** ✅ 특정 매수이력 삭제 */
   @Delete(':historyId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: '투자일지에 기록한 매수기록을 삭제합니다.' })
+  @ApiResponse({ status: 201 })
   async remove(
     @Req() req: any,
     @Param('logId') logId: number,
