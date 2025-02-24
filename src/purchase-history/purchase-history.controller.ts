@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Req,
@@ -24,10 +23,10 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { InvestingLogsService } from '../investing-logs/investing-logs.service'
 import { AssetsService } from '../assets/assets.service'
 
-@ApiTags('자산 추가')
+@ApiTags('투자일지에 매수 자산 종목 등록')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
-@Controller('/investing-logs/{:logId}/purchase-history')
+@Controller('api/investing-logs/{:logId}/purchase-history')
 export class PurchaseHistoryController {
   private readonly logger = new Logger(PurchaseHistoryController.name)
   constructor(
@@ -83,10 +82,9 @@ export class PurchaseHistoryController {
     return result
   }
 
-  /** ✅ 투자일지의 매수이력 목록 조회 */
   @Get('list')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: '투자일지의 매수이력을 모두 조회합니다.' })
+  @ApiOperation({ summary: '투자일지 매수 기록을 모두 조회합니다.' })
   @ApiResponse({ status: 201 })
   async findAll(@Req() req: any, @Param('logId') logId: number) {
     this.logger.log(`📌 [GET] /purchase-history/list - 요청 수신`)
@@ -125,26 +123,11 @@ export class PurchaseHistoryController {
     )
 
     return purchaseHistories
-    // return this.purchaseHistoryService.findAll()
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.purchaseHistoryService.findOne(+id)
-  // }
-
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updatePurchaseHistoryDto: UpdatePurchaseHistoryDto,
-  // ) {
-  //   return this.purchaseHistoryService.update(+id, updatePurchaseHistoryDto)
-  // }
-
-  /** ✅ 특정 매수이력 삭제 */
   @Delete(':historyId')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: '투자일지에 기록한 매수기록을 삭제합니다.' })
+  @ApiOperation({ summary: '투자일지의 매수 기록 단건을 삭제합니다.' })
   @ApiResponse({ status: 201 })
   async remove(
     @Req() req: any,

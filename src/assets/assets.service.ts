@@ -27,15 +27,4 @@ export class AssetsService {
 
     return asset
   }
-
-  /* 추후 구현 예정 */
-  // update(id: number, updateAssetDto: UpdateAssetDto) {
-  //   return `This action updates a #${id} asset`;
-  // }
-  // remove(id: number) {
-  //   return `This action removes a #${id} asset`;
-  // }
-  // create(createAssetDto: CreateAssetDto) {
-  //   return 'This action adds a new asset';
-  // }
 }

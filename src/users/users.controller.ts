@@ -1,32 +1,25 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common'
+/* 사용하지 않는 컨트롤러, 삭제 예정 */
+
+import { Controller, Get, Body } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
-import { UpdateUserDto } from './dto/update-user.dto'
 
 @Controller('/api/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // @Post('/join') // 회원가입
-  async create(
-    @Body() createUserDto: CreateUserDto,
-  ): Promise<{ message: string }> {
-    // await this.usersService.signUp(createUserDto)
-    return { message: 'success' }
-  }
-
-  @Get()
-  findAll() {
-    return this.usersService.findAll()
-  }
+  // @Post('/join')
+  // async create(
+  //   @Body() createUserDto: CreateUserDto,
+  // ): Promise<{ message: string }> {
+  //   await this.usersService.signUp(createUserDto)
+  //   return { message: 'success' }
+  // }
+  //
+  // @Get()
+  // findAll() {
+  //   return this.usersService.findAll()
+  // }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {

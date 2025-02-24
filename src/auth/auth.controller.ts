@@ -30,8 +30,6 @@ export class AuthController {
   async signIn(
     @Body() loginUserDto: LoginUserDto,
   ): Promise<{ accessToken: string }> {
-    /* refresh token을 쿠키에 저장하는 로직 작성*/
-
     return this.usersService.signIn(loginUserDto)
   }
 }
