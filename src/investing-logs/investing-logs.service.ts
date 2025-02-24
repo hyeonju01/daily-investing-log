@@ -78,8 +78,12 @@ export class InvestingLogsService {
   /**
    * 투자일지 삭제 (soft Delete)
    */
-  async softDelete(logId: number, userId: number): Promise<void> {
+  async softDelete(
+    logId: number,
+    userId: number,
+  ): Promise<{ message: string }> {
     console.log(`🔎 softDelete 실행됨: logId=${logId}, userId=${userId}`)
+
     // 요청 사용자 확인
     const user: User = await this.userService.findById(userId)
     if (!user) {
@@ -89,12 +93,14 @@ export class InvestingLogsService {
     // 투자일지 확인
     const investingLog = await this.investingLogRepository.findOne({
       where: { id: logId },
+      relations: ['user'],
     })
+
     if (!investingLog) {
       console.log(`✅ Found InvestingLog:`, investingLog)
       throw new NotFoundException('Investing log does not exist')
     }
-    console.log(`✅ Found InvestingLog:`, investingLog)
+    console.log(`🚨investingLog.user.id:`, investingLog.user?.id)
 
     // 요청 사용자가 해당 투자일지를 소유하고 있는지 확인
     if (investingLog.user.id !== userId) {
@@ -109,6 +115,7 @@ export class InvestingLogsService {
 
     // 투자일지 Soft Delete
     await this.investingLogRepository.update(logId, { isDeleted: true })
+    return { message: 'Investing log successfully soft deleted' }
   }
 
   // /**

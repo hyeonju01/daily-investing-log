@@ -92,11 +92,16 @@ describe('InvestingLogsController', () => {
   })
 
   it('should soft delete an investing log', async () => {
+    const mockMessage = { message: 'Investing log successfully soft deleted' }
+    jest
+      .spyOn(mockInvestingLogService, 'softDelete')
+      .mockResolvedValue(mockMessage)
+
     const result = await investingLogsController.deleteInvestingLog(
       mockRequest,
       mockInvestingLog.id,
     )
-    expect(result).toBeUndefined()
+    expect(result).toEqual(mockMessage)
     expect(mockInvestingLogService.softDelete).toHaveBeenCalledWith(
       mockInvestingLog.id,
       mockRequest.user.id,
