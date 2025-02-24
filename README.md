@@ -18,6 +18,7 @@
 
 ## 📊 ERD & Atchitecure
 ---
+![Image](https://github.com/user-attachments/assets/1675348a-3957-4309-a61c-421e592c69b9)
 
 ## 📄 기술스택
     ☀︎ API: REST API
