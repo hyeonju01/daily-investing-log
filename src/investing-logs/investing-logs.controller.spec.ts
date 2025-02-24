@@ -14,13 +14,14 @@ describe('InvestingLogsController', () => {
     investingDate: new Date('2024-02-19'),
     createdAt: new Date(),
     updatedAt: new Date(),
+    isDeleted: false,
   }
 
   const mockInvestingLogService = {
     create: jest.fn().mockResolvedValue(mockInvestingLog),
     findAllByUserId: jest.fn().mockResolvedValue([mockInvestingLog]),
     findOne: jest.fn().mockResolvedValue(mockInvestingLog),
-    deleteInvestingLog: jest.fn().mockResolvedValue(undefined),
+    softDelete: jest.fn(),
   }
 
   const mockRequest = {
@@ -90,13 +91,18 @@ describe('InvestingLogsController', () => {
     )
   })
 
-  it('should delete an investing log', async () => {
+  it('should soft delete an investing log', async () => {
+    const mockMessage = { message: 'Investing log successfully soft deleted' }
+    jest
+      .spyOn(mockInvestingLogService, 'softDelete')
+      .mockResolvedValue(mockMessage)
+
     const result = await investingLogsController.deleteInvestingLog(
       mockRequest,
       mockInvestingLog.id,
     )
-    expect(result).toBeUndefined()
-    expect(mockInvestingLogService.deleteInvestingLog).toHaveBeenCalledWith(
+    expect(result).toEqual(mockMessage)
+    expect(mockInvestingLogService.softDelete).toHaveBeenCalledWith(
       mockInvestingLog.id,
       mockRequest.user.id,
     )

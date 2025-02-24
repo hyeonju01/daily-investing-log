@@ -40,9 +40,6 @@ export class InvestingLogsController {
     @Req() req: any,
     @Body() createInvestingLogDto: CreateInvestingLogDto,
   ) {
-    // console.log('req:', req)
-    // console.log('req.user:', req.user)
-
     const userId = req.user?.id
     if (!userId) {
       throw new UnauthorizedException('User not authenticated')
@@ -83,9 +80,19 @@ export class InvestingLogsController {
   @Delete(':logId')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: '사용자의 투자일지를 삭제합니다.' })
-  @ApiResponse({ status: 201 })
-  async deleteInvestingLog(@Req() req: any, @Param('logId') logId: number) {
-    return this.investingLogsService.deleteInvestingLog(logId, req.user.id)
+  @ApiResponse({ status: 201, description: '투자일지 삭제 성공' })
+  async deleteInvestingLog(
+    @Req() req: any,
+    @Param('logId') logId: number,
+  ): Promise<{ message: string }> {
+    console.log(`📌 [DELETE] /investing-logs/${logId} - 요청 수신`)
+
+    if (!req.user) {
+      throw new UnauthorizedException('User not authenticated')
+    }
+    console.log(`🔹 요청 유저: ${JSON.stringify(req.user)}`)
+
+    return await this.investingLogsService.softDelete(logId, req.user.id)
   }
 
   // @Patch(':id')

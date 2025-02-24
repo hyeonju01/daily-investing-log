@@ -9,6 +9,7 @@ import { AuthModule } from '../auth/auth.module'
   imports: [TypeOrmModule.forFeature([User]), forwardRef(() => AuthModule)],
   controllers: [UsersController],
   providers: [UsersService],
-  exports: [UsersService],
+  exports: [UsersService, TypeOrmModule],
 })
 export class UsersModule {}
+// user module - auth module 모듈 간 필요한 것만 남기고 리팩토링

@@ -6,20 +6,23 @@ import {
   Post,
 } from '@nestjs/common'
 import { CreateInvestingLogDto } from './dto/create-investing-log.dto'
-import { UpdateInvestingLogDto } from './dto/update-investing-log.dto'
 import { InvestingLog } from './entities/investing-log.entity'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { AuthService } from '../auth/auth.service'
 import { UsersService } from '../users/users.service'
 import { User } from '../users/entities/user.entity'
+import { PurchaseHistory } from '../purchase-history/entities/purchase-history.entity'
 
 @Injectable()
 export class InvestingLogsService {
   constructor(
     @InjectRepository(InvestingLog)
-    private investingLogRepository: Repository<InvestingLog>,
-    private userService: UsersService,
+    private readonly investingLogRepository: Repository<InvestingLog>,
+
+    @InjectRepository(PurchaseHistory)
+    private readonly purchaseHistoryRepository: Repository<PurchaseHistory>,
+    private readonly userService: UsersService,
   ) {}
 
   /**
@@ -48,8 +51,7 @@ export class InvestingLogsService {
    */
   async findAllByUserId(userId: number): Promise<InvestingLog[]> {
     return this.investingLogRepository.find({
-      where: { user: { id: userId } },
-      relations: ['user'],
+      where: { user: { id: userId }, isDeleted: false },
     })
   }
 
@@ -74,12 +76,55 @@ export class InvestingLogsService {
   }
 
   /**
-   * 투자일지 삭제
+   * 투자일지 삭제 (soft Delete)
    */
-  async deleteInvestingLog(logId: number, userId: number): Promise<void> {
-    const investingLog = await this.findOne(logId, userId)
-    await this.investingLogRepository.remove(investingLog)
+  async softDelete(
+    logId: number,
+    userId: number,
+  ): Promise<{ message: string }> {
+    console.log(`🔎 softDelete 실행됨: logId=${logId}, userId=${userId}`)
+
+    // 요청 사용자 확인
+    const user: User = await this.userService.findById(userId)
+    if (!user) {
+      throw new NotFoundException('User does not exist')
+    }
+
+    // 투자일지 확인
+    const investingLog = await this.investingLogRepository.findOne({
+      where: { id: logId },
+      relations: ['user'],
+    })
+
+    if (!investingLog) {
+      console.log(`✅ Found InvestingLog:`, investingLog)
+      throw new NotFoundException('Investing log does not exist')
+    }
+    console.log(`🚨investingLog.user.id:`, investingLog.user?.id)
+
+    // 요청 사용자가 해당 투자일지를 소유하고 있는지 확인
+    if (investingLog.user.id !== userId) {
+      throw new ForbiddenException('You do not own this investing log')
+    }
+
+    // 투자일지에 연결된 모든 매수이력을 Soft Delete
+    await this.purchaseHistoryRepository.update(
+      { investingLog: { id: logId } },
+      { isDeleted: true },
+    )
+
+    // 투자일지 Soft Delete
+    await this.investingLogRepository.update(logId, { isDeleted: true })
+    return { message: 'Investing log successfully soft deleted' }
   }
+
+  // /**
+  //  * 투자일지 삭제 (Hard Delete)
+  //  */
+  // async deleteInvestingLog(logId: number, userId: number): Promise<void> {
+  //   const investingLog = await this.findOne(logId, userId)
+  //   await this.investingLogRepository.remove(investingLog)
+  // }
 
   // update(id: number, updateInvestingLogDto: UpdateInvestingLogDto) {
   //   return `This action updates a #${id} investingLog`;
