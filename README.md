@@ -1,45 +1,36 @@
-  <p align="center">투자일지 웹 서비스</p>
-    <p align="center">
+# 투자일지 API
+- 2025 블루밍그레이스 과제 테스트
+- 과제 테스트 진행기간 2025.2.00~ 2025.2.00
+- 지원 직무: 백엔드 엔지니어
 
-## Output: API 문서 URL
-_작성예정_
+## 📌 주요 기능
+---
+- [📄 Swagger API URL](http://ec2-34-203-191-73.compute-1.amazonaws.com:3000/api-docs/)
 
-## 요구사항
-### 인가, 인증
-1. 회원가입
-- 중복 이메일 X
-- 사용자 이메일 인증 기능
-- 비밀번호 암호화 처리 후 DB에 저장
-- 비밀번호 재설정 기능 (이메일 발송을 통해서)
+#### 회원가입/로그인
+- JWT 기반 인증 방식
+- 회원가입시 이메일 인증 후 토큰을 발급받을 수 있다.
+- 서버는 클라이언트 로그인 시 액세스 토큰, 리프레쉬 토큰을 발급한다. 액세스 토큰을 클라이언트에게 반환한다. 리프레쉬 토큰은 DB에 저장한다.
+#### 투자일지 작성
+- 로그인한 사용자만 투자일지를 작성할 수 있다.
+- 투자일지를 생성한 후 자산종목과 매수량, 매수액을 기록할 수 있다.
+- 사용자는 본인의 투자일지만 삭제할 수 있다.
 
-2. 로그인
-- JWT 토큰 기반 사용자 식별
-- JWT 유효성 검사
-- JWT 연장, 만료 처리
 
-### 투자 일지 CRUD
-- 추가
-- 삭제 (Soft Delete)
-- 투자 일지 리스트 조회
-- 투자 일지 내 종목 리스트 조회
+## 📊 ERD & Atchitecure
+---
 
-### 자산(=종목) CRUD
-- 자산 리스트 조회
-- 추가
-- 삭제
+## 📄 기술스택
+    ☀︎ API: REST API
+    ☀︎ RDB: MySQL (Amazon RDS)
+    ☀︎ Language: Typescript
+    ☀︎ FrameWork: NestJS
+    ☀︎ CI/CD: GitHub Actions and Jenkins Container on GCP
 
-## 기술 스택
-- API: REST API
-- RDB: MySQL Docker Container on GCP 
-- Language: Typescript
-- FrameWork: NestJS
-- CI/CD: GitHub Actions and Jenkins Container on GCP
 
-## ERD
-_작성예정_
+## 🚀 트러블슈팅
+---
 
-## Project Architecture
-_작성예정_
+## ✍🏼 회고
+---
 
-## 회고 / 트러블슈팅
-_작성예정_
