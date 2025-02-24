@@ -9,27 +9,26 @@ import {
 } from 'typeorm'
 import { InvestingLog } from '../../investing-logs/entities/investing-log.entity'
 
-// 회원 ID, 이메일, 비밀번호, 생성일, 수정일, 리프레쉬 토큰
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: number
+  id: number // PK
 
   @Column({ unique: true }) // email 중복 불가
-  email: string
+  email: string // 이메일
 
   @Column()
-  password: string
+  password: string // 비밀번호
 
-  //@OneToMany(() => InvestingLog, (investingLog) => investingLog.user)
-  //investingLogs: InvestingLog[]
+  @OneToMany(() => InvestingLog, (investingLog) => investingLog.user)
+  investingLogs: InvestingLog[] // 투자일지
 
   @Column({ type: 'text', nullable: true })
   refresh_token?: string | null
 
-  @CreateDateColumn()
+  @CreateDateColumn() // 생성일
   created_at: Date
 
-  @UpdateDateColumn()
+  @UpdateDateColumn() // 수정일
   updated_at: Date
 }

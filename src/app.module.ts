@@ -3,7 +3,7 @@
 //
 // config({ path: '.env.staging' })
 
-import { Module } from '@nestjs/common'
+import { forwardRef, Module } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { ConfigModule, ConfigService } from '@nestjs/config'
@@ -13,6 +13,7 @@ import { UsersModule } from './users/users.module'
 import { AuthModule } from './auth/auth.module'
 import { AssetsModule } from './assets/assets.module'
 import { InvestingLogsModule } from './investing-logs/investing-logs.module'
+import { PurchaseHistoryModule } from './purchase-history/purchase-history.module'
 
 @Module({
   imports: [
@@ -27,10 +28,11 @@ import { InvestingLogsModule } from './investing-logs/investing-logs.module'
       inject: [ConfigService],
       useFactory: getDatabaseConfig,
     }),
-    UsersModule,
+    forwardRef(() => UsersModule),
     AuthModule,
     AssetsModule,
     InvestingLogsModule,
+    PurchaseHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

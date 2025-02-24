@@ -4,35 +4,44 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
 import { User } from '../../users/entities/user.entity'
+import { PurchaseHistory } from '../../purchase-history/entities/purchase-history.entity'
 
 @Entity()
 export class InvestingLog {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn() // PK
   id: number
 
-  @ManyToOne(() => User, (user: User) => user)
+  @ManyToOne(() => User, (user) => user.investingLogs, { onDelete: 'CASCADE' })
   // @JoinColumn({ name: 'userId' })
-  user: User
+  user: User // (FK) 회원 ID
 
-  @Column({ name: 'userId', nullable: false })
-  userId: number
+  // @Column({ name: 'userId', nullable: false })
+  // userId: number
 
-  @Column({ type: 'text' })
+  @OneToMany(
+    () => PurchaseHistory,
+    (purchaseHistory) => purchaseHistory.investingLog,
+    { cascade: true },
+  ) // 매수이력
+  purchaseHistories: PurchaseHistory[]
+
+  @Column({ type: 'text' }) // 투자일지 제목
   title: string
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text' }) // 투자일지 내용
   contents: string
 
-  @Column({ type: 'date' })
+  @Column({ type: 'date' }) // 매수일
   investingDate: Date
 
-  @CreateDateColumn()
+  @CreateDateColumn() // 생성일
   createdAt: Date
 
-  @UpdateDateColumn()
+  @UpdateDateColumn() // 수정일
   updatedAt: Date
 }

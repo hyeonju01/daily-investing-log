@@ -6,6 +6,7 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import * as bcrypt from 'bcrypt'
 import { AuthService } from '../auth/auth.service'
 import { BadRequestException } from '@nestjs/common'
+import { mockInvestingLog } from '../mocks/mockInvestingLog'
 
 describe('UsersService', () => {
   let usersService: UsersService
@@ -17,6 +18,7 @@ describe('UsersService', () => {
     id: 1,
     email: 'test@example.com',
     password: 'hashedPassword',
+    investingLogs: [],
     refresh_token: null,
     created_at: new Date(),
     updated_at: new Date(),
@@ -43,26 +45,10 @@ describe('UsersService', () => {
         {
           provide: getRepositoryToken(User), // 가짜 리포지토리 주입
           useValue: mockRepository,
-          // {
-          //   create: jest.fn().mockImplementation((dto) => ({
-          //     id: Math.floor(Math.random() * 1000),
-          //     email: dto.email,
-          //     password: dto.password,
-          //     created_at: new Date(),
-          //     updated_at: new Date(),
-          //   })),
-          //   save: jest.fn().mockImplementation(async (user) => ({
-          //     ...user,
-          //     updated_at: new Date(),
-          //   })),
-          // },
         },
         {
           provide: AuthService,
           useValue: mockAuthService,
-          // {
-          //   issueAccessToken: jest.fn(),
-          //   issueRefreshToken: jest.fn(),
         },
       ],
     }).compile()
@@ -70,9 +56,6 @@ describe('UsersService', () => {
     usersService = module.get<UsersService>(UsersService)
     userRepository = module.get<Repository<User>>(getRepositoryToken(User))
     authService = module.get<AuthService>(AuthService)
-
-    console.log('▶️ UsersService:', usersService)
-    console.log('▶️ UserRepository:', userRepository)
   })
 
   it('should be defined', () => {
