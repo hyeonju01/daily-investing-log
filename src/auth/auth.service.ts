@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -16,9 +15,9 @@ import * as bcrypt from 'bcrypt'
 export class AuthService {
   constructor(
     @InjectRepository(User)
-    private UserRepository: Repository<User>,
-    private jwtService: JwtService, // readOnl?
-    private configService: ConfigService, // readOnly?
+    private readonly UserRepository: Repository<User>,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   /* Access Token 발급 */
@@ -41,26 +40,38 @@ export class AuthService {
         expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN'),
       },
     )
-    // 사용자 엔티티에 refresh Token 저장
-    await this.storeRefreshToken(id, refreshToken)
 
-    // return `Issue Refresh Completed. Refresh Token: ${refreshToken}`
+    await this.storeRefreshToken(id, refreshToken) // 사용자 엔티티에 refresh Token 저장
+
     return refreshToken
   }
 
   /* Access Token 재발급 */
-  async reIssueAccessToken(userId: number, oldRefreshToken: string) {
-    const isValid = this.validateRefreshToken(userId, oldRefreshToken)
-    if (!isValid) {
-      throw new UnauthorizedException('Invalid Token')
+  async reIssueAccessToken(oldRefreshToken: string) {
+    try {
+      const payload = this.jwtService.verify(oldRefreshToken, {
+        secret: this.configService.get<string>('JWT_SECRET'),
+      })
+
+      const isValid = this.validateRefreshToken(payload.sub, oldRefreshToken)
+
+      if (!isValid) {
+        throw new UnauthorizedException('만료된 리프레쉬 토큰입니다.')
+      }
+
+      const newAccessToken = await this.issueAccessToken(
+        payload.sub,
+        payload.email,
+      )
+
+      const newRefreshToken = await this.issueRefreshToken(payload.sub)
+
+      await this.storeRefreshToken(payload.sub, newRefreshToken)
+
+      return { accessToken: newAccessToken, refreshToken: newRefreshToken }
+    } catch (error) {
+      throw new UnauthorizedException(error.message)
     }
-
-    const newAccessToken = await this.issueAccessToken(userId, oldRefreshToken)
-
-    const newRefreshToken = await this.issueRefreshToken(userId)
-    await this.storeRefreshToken(userId, newRefreshToken)
-
-    return { accessToken: newAccessToken }
   }
 
   /* RT 저장 */
@@ -84,57 +95,17 @@ export class AuthService {
     return isValid
   }
 
-  /* 이메일 인증 토큰 발급 */
-  async sendEmailVerification(email: string): Promise<string> {
-    const user = await this.UserRepository.findOne({ where: { email } })
+  /* 로그아웃 */
+  async logout(userId: number): Promise<{ message: string }> {
+    const user = await this.UserRepository.findOne({
+      where: { id: userId },
+    })
+
     if (!user) {
-      throw new NotFoundException('User not found')
+      throw new BadRequestException('User not found')
     }
 
-    if (user.isEmailVerified) {
-      throw new BadRequestException('Email is already verified')
-    }
-
-    const token = this.jwtService.sign(
-      { sub: user.id, email: user.email },
-      {
-        secret: this.configService.get<string>('JWT_SECRET'),
-        expiresIn: '1h',
-      },
-    )
-
-    // TODO: 이메일 발송 로직 추가 (메일 서비스 사용)
-    console.log(
-      `🔗 Email verification link: http://localhost:3000/api/auth/verify-email/${token}`,
-    )
-
-    return token
-  }
-
-  /* 이메일 인증 확인 */
-  async verifyEmail(token: string): Promise<string> {
-    try {
-      const payload = this.jwtService.verify(token, {
-        secret: this.configService.get<string>('JWT_SECRET'),
-      })
-
-      const user = await this.UserRepository.findOne({
-        where: { id: payload.sub },
-      })
-      if (!user) {
-        throw new NotFoundException('User not found')
-      }
-
-      if (user.isEmailVerified) {
-        throw new BadRequestException('Email is already verified')
-      }
-
-      user.isEmailVerified = true
-      await this.UserRepository.save(user)
-
-      return 'Email verified successfully'
-    } catch (error) {
-      throw new BadRequestException('Invalid or expired token')
-    }
+    await this.UserRepository.update(userId, { refresh_token: null })
+    return { message: 'Successfully logged out' }
   }
 }

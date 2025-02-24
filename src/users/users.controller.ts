@@ -16,17 +16,17 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   // @Post('/join') // 회원가입
-  async create(
-    @Body() createUserDto: CreateUserDto,
-  ): Promise<{ message: string }> {
-    // await this.usersService.signUp(createUserDto)
-    return { message: 'success' }
-  }
+  // async create(
+  //   @Body() createUserDto: CreateUserDto,
+  // ): Promise<{ message: string }> {
+  //   // await this.usersService.signUp(createUserDto)
+  //   return { message: 'success' }
+  // }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll()
-  }
+  // @Get()
+  // findAll() {
+  //   return this.usersService.findAll()
+  // }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {
